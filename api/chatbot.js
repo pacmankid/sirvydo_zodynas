@@ -1,4 +1,4 @@
-import zodynas from '../data/zodynascsvjson.json';
+const zodynas = require('../data/zodynascsvjson.json');
 
 export default async function handler(req, res) {
     if (req.method !== "POST") {
