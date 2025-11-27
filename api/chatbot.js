@@ -1,4 +1,5 @@
 const zodynas = require('../data/zodynascsvjson.json');
+const fetch = require('node-fetch');
 
 module.exports = async function handler(req, res) {
     if (req.method !== "POST") {
@@ -11,12 +12,14 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ error: "Missing API key or prompt" });
     }
 
+    console.log("JSON turinys:", zodynas);
+    console.log("Vartotojo klausimas:", question);
+
     const relevant = zodynas.filter(item =>
         question.toLowerCase().includes(item.seno_zodzio_forma.toLowerCase().trim())
     );
 
-    console.log("Vartotojo klausimas:", question);
-    console.log("Rasti JSON įrašai:", relevant);
+    console.log("Rasti įrašai:", relevant);
 
     if (relevant.length === 0) {
         return res.status(200).json({ answer: "Atsiprašau, neradau informacijos apie šį žodį." });
@@ -29,7 +32,7 @@ Duomenų bazė: ${JSON.stringify(relevant)}
 Atsakyk aiškiai:
 1. Senovinis žodis
 2. Dabartinė forma
-3. Paaiškinimas (išverstas į dabartinę lietuvių kalbą)
+3. Paaiškinimas (dabartine lietuvių kalba)
 `;
 
     try {
@@ -46,9 +49,9 @@ Atsakyk aiškiai:
         });
 
         const data = await response.json();
+        console.log("OpenAI atsakymas:", data);
 
         const answer = data.choices?.[0]?.message?.content || "Įvyko klaida gaunant atsakymą";
-
         return res.status(200).json({ answer });
 
     } catch (error) {
