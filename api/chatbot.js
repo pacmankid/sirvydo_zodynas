@@ -53,7 +53,7 @@ module.exports = async function handler(req, res) {
     - Nenaudoti sąrašų numeracijos ar ##, bet vis tiek informacija turi būti aiški.
     - Jei duomenų bazėje yra tik fragmentinė informacija, naudok tik ją, stilistiškai papildyk tik tiek, kiek būtina aiškumui.
     - Įtrauk pirmą pasisveikinimą tik jei tai pirmas vartotojo klausimas sesijoje.
-    ;
+    `;
     try {
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
