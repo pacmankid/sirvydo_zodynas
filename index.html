@@ -1,67 +1,3 @@
-<!DOCTYPE html>
-<html lang="lt" class="dark">
-<head>
-    <meta charset="UTF-8" />
-    <title>Sirvydo žodynas • Chatbot</title>
-
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: "#0079ff",
-                        bgLight: "#f5f7fa",
-                        bgDark: "#1e1f24",
-                        msgBot: "#32343a"
-                    }
-                }
-            }
-        }
-    </script>
-</head>
-
-<body class="bg-bgLight dark:bg-bgDark text-gray-900 dark:text-gray-100 transition-colors duration-300">
-
-<div class="max-w-3xl mx-auto h-screen flex flex-col p-4">
-
-    <!-- HEADER -->
-    <div class="flex items-center justify-between mb-4">
-        <h1 class="text-2xl font-bold">Sirvydo žodynas • Chatbot</h1>
-        <button id="toggleTheme"
-            class="px-3 py-1 rounded-lg bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-            🌙 / ☀️
-        </button>
-    </div>
-
-    <!-- API INPUT -->
-    <label class="text-sm">Įveskite savo DI API raktą:</label>
-    <input type="text" id="apiKey"
-        class="w-full p-2 rounded-lg border dark:border-gray-700 bg-white dark:bg-gray-800 mb-2"
-        placeholder="API raktas">
-
-    <!-- CHATBOX -->
-    <div id="chatbox"
-        class="flex-1 overflow-y-auto bg-white dark:bg-gray-800 rounded-xl p-4 shadow-inner flex flex-col gap-4">
-    </div>
-
-    <!-- INPUT BAR -->
-    <div class="flex mt-3 gap-2">
-        <input type="text" id="userQuestion"
-            class="flex-1 p-3 rounded-xl border dark:border-gray-700 bg-white dark:bg-gray-900"
-            placeholder="Įveskite klausimą...">
-
-        <button id="sendBtn"
-            class="px-5 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition">
-            Siųsti
-        </button>
-    </div>
-
-</div>
-
 <script>
     const chatbox = document.getElementById('chatbox');
     const userInput = document.getElementById('userQuestion');
@@ -81,11 +17,9 @@
         const avatar = document.createElement("div");
         avatar.className = "w-10 h-10 rounded-full flex-shrink-0 overflow-hidden";
 
-        // Neutralus vartotojo avataras
         if (sender === "user") {
             avatar.innerHTML = `<div class='w-full h-full bg-gray-500 text-white flex items-center justify-center font-bold'>👤</div>`;
         } else {
-            // Sirvydo avataras proporcingai
             avatar.innerHTML = `<img src="https://lndm.lt/wp-content/uploads/2019/08/pro-vg_kss_dgobj_6271536624770493993.jpg" class="w-full h-full object-cover">`;
         }
 
@@ -94,7 +28,10 @@
             p-3 rounded-xl text-sm leading-relaxed shadow
             ${sender === "user" ? "bg-primary text-white" : "bg-gray-200 dark:bg-msgBot"}
         `;
-        bubble.textContent = text;
+
+        // Paverčiame atsakymą į pastraipas <p> elementais
+        const paragraphs = text.split(/\n+/).filter(line => line.trim() !== "");
+        bubble.innerHTML = paragraphs.map(p => `<p class="mb-2">${p}</p>`).join("");
 
         wrap.appendChild(avatar);
         wrap.appendChild(bubble);
@@ -125,7 +62,6 @@
         chatbox.scrollTop = chatbox.scrollHeight;
 
         try {
-            // Tikriname, ar jau buvo pirmas pasisveikinimas
             const firstMessage = !sessionStorage.getItem("sirvydasGreeted");
 
             const response = await fetch("/api/chatbot", {
@@ -140,7 +76,6 @@
             typing.remove();
             addMessage(answer, "bot");
 
-            // Pažymime, kad pasveikinta
             if (firstMessage) sessionStorage.setItem("sirvydasGreeted", "true");
 
         } catch {
@@ -154,6 +89,3 @@
         if (e.key === "Enter") sendMessage();
     });
 </script>
-
-</body>
-</html>
