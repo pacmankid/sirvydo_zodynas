@@ -8,112 +8,116 @@
 </head>
 <body class="bg-gray-900 text-gray-200 min-h-screen flex flex-col relative">
 
+<div class="max-w-3xl mx-auto h-screen flex flex-col p-4">
+
+    <!-- API INPUT -->
+    <label class="text-sm mb-1">Įveskite DI API raktą:</label>
+    <input type="text" id="apiKey" placeholder="API raktas" class="w-full p-3 rounded-lg bg-gray-700 text-gray-100 mb-3 focus:outline-none">
+
     <!-- CHAT WINDOW -->
-    <div id="chatbox" class="flex-1 overflow-y-auto p-4 space-y-4 pb-32 sm:pb-28"></div>
+    <div id="chatbox" class="flex-1 overflow-y-auto p-4 space-y-4 mb-28 sm:mb-28 bg-gray-800 rounded-xl shadow-inner"></div>
 
     <!-- INPUT BAR FIXED BOTTOM -->
     <div class="fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 p-3 flex items-center gap-2">
         <input id="userQuestion" type="text" placeholder="Rašykite klausimą…" class="flex-1 p-3 rounded-lg bg-gray-700 text-gray-100 focus:outline-none">
         <button id="sendBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">Siųsti</button>
     </div>
+</div>
 
-    <script>
-        const chatbox = document.getElementById("chatbox");
-        const userInput = document.getElementById("userQuestion");
-        const sendBtn = document.getElementById("sendBtn");
+<script>
+    const chatbox = document.getElementById("chatbox");
+    const userInput = document.getElementById("userQuestion");
+    const sendBtn = document.getElementById("sendBtn");
+    const apiKeyInput = document.getElementById("apiKey");
 
-        // ISTORIJOS IŠSAUGOJIMAS
-        function saveHistory() {
-            localStorage.setItem("sirvydas_history", chatbox.innerHTML);
+    function saveHistory() {
+        localStorage.setItem("sirvydas_history", chatbox.innerHTML);
+    }
+    function loadHistory() {
+        const history = localStorage.getItem("sirvydas_history");
+        if (history) chatbox.innerHTML = history;
+    }
+    loadHistory();
+
+    async function typeWriterEffect(element, text, speed = 15) {
+        for (let i = 0; i < text.length; i++) {
+            element.innerHTML += text[i];
+            await new Promise(res => setTimeout(res, speed));
         }
-        function loadHistory() {
-            const history = localStorage.getItem("sirvydas_history");
-            if (history) chatbox.innerHTML = history;
+    }
+
+    function addMessage(text, sender) {
+        const wrapper = document.createElement("div");
+        wrapper.className = `flex items-start gap-3 ${sender === 'user' ? 'justify-end' : ''}`;
+
+        const avatar = document.createElement("div");
+        avatar.className = "w-10 h-10 rounded-full overflow-hidden flex-shrink-0";
+        if (sender === 'user') {
+            avatar.innerHTML = `<div class='w-full h-full bg-blue-600 text-white flex items-center justify-center rounded-full'>🧑</div>`;
+        } else {
+            avatar.innerHTML = `<img src='https://upload.wikimedia.org/wikipedia/commons/4/43/Konstanty_Szyrwid.PNG' class='w-full h-full object-cover'>`;
         }
-        loadHistory();
 
-        // RAŠYMO ANIMACIJA (letter-by-letter)
-        async function typeWriterEffect(element, text, speed = 15) {
-            for (let i = 0; i < text.length; i++) {
-                element.innerHTML += text[i];
-                await new Promise(res => setTimeout(res, speed));
-            }
-        }
+        const bubble = document.createElement("div");
+        bubble.className = `max-w-[75%] p-3 rounded-xl shadow-md leading-relaxed ${sender === 'user' ? 'bg-blue-600 text-white rounded-br-none' : 'bg-gray-700 text-gray-100 rounded-bl-none'}`;
 
-        function addMessage(text, sender) {
-            const wrapper = document.createElement("div");
-            wrapper.className = `flex items-start gap-3 ${sender === 'user' ? 'justify-end' : ''}`;
-
-            // Avatar
-            const avatar = document.createElement("div");
-            avatar.className = "w-10 h-10 rounded-full overflow-hidden flex-shrink-0";
-
-            if (sender === 'user') {
-                avatar.innerHTML = `<div class='w-full h-full bg-blue-600 text-white flex items-center justify-center rounded-full'>🧑</div>`;
-            } else {
-                avatar.innerHTML = `<img src='https://upload.wikimedia.org/wikipedia/commons/4/43/Konstanty_Szyrwid.PNG' class='w-full h-full object-cover'>`;
-            }
-
-            const bubble = document.createElement("div");
-            bubble.className = `max-w-[75%] p-3 rounded-xl shadow-md leading-relaxed ${sender === 'user' ? 'bg-blue-600 text-white rounded-br-none' : 'bg-gray-800 text-gray-100 rounded-bl-none'}`;
-
-            if (sender === 'user') {
-                wrapper.appendChild(bubble);
-                wrapper.appendChild(avatar);
-                bubble.textContent = text;
-                chatbox.appendChild(wrapper);
-                chatbox.scrollTop = chatbox.scrollHeight;
-                saveHistory();
-                return;
-            }
-
-            wrapper.appendChild(avatar);
+        if (sender === 'user') {
             wrapper.appendChild(bubble);
+            wrapper.appendChild(avatar);
+            bubble.textContent = text;
             chatbox.appendChild(wrapper);
             chatbox.scrollTop = chatbox.scrollHeight;
-
-            typeWriterEffect(bubble, text).then(saveHistory);
+            saveHistory();
+            return;
         }
 
-        async function sendMessage() {
-            const question = userInput.value.trim();
-            if (!question) return;
+        wrapper.appendChild(avatar);
+        wrapper.appendChild(bubble);
+        chatbox.appendChild(wrapper);
+        chatbox.scrollTop = chatbox.scrollHeight;
+        typeWriterEffect(bubble, text).then(saveHistory);
+    }
 
-            addMessage(question, "user");
-            userInput.value = "";
+    async function sendMessage() {
+        const question = userInput.value.trim();
+        const apiKey = apiKeyInput.value.trim();
+        if (!question || !apiKey) {
+            alert("Įveskite API raktą ir klausimą");
+            return;
+        }
 
-            addMessage("…", "bot");
+        addMessage(question, "user");
+        userInput.value = "";
 
-            try {
-                const response = await fetch("/api/chatbot", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ prompt: question })
-                });
+        addMessage("…", "bot");
 
-                const data = await response.json();
-                const last = chatbox.lastChild.querySelector('div:nth-child(2)');
-                last.innerHTML = "";
+        try {
+            const response = await fetch("/api/chatbot", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ apiKey, prompt: question })
+            });
 
-                if (!data.answer) {
-                    typeWriterEffect(last, "⚠ Įvyko klaida. Patikrinkite API atsakymą.");
-                    return;
-                }
-
-                typeWriterEffect(last, data.answer);
-
-            } catch (err) {
-                console.error(err);
-                const last = chatbox.lastChild.querySelector('div:nth-child(2)');
-                last.innerHTML = "";
-                typeWriterEffect(last, "⚠ Nepavyko susisiekti su serveriu.");
+            const data = await response.json();
+            const last = chatbox.lastChild.querySelector('div:nth-child(2)');
+            last.innerHTML = "";
+            if (!data.answer) {
+                typeWriterEffect(last, "⚠ Įvyko klaida. Patikrinkite API atsakymą.");
+                return;
             }
+            typeWriterEffect(last, data.answer);
+        } catch (err) {
+            console.error(err);
+            const last = chatbox.lastChild.querySelector('div:nth-child(2)');
+            last.innerHTML = "";
+            typeWriterEffect(last, "⚠ Nepavyko susisiekti su serveriu.");
         }
+    }
 
-        sendBtn.addEventListener("click", sendMessage);
-        userInput.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") sendMessage();
-        });
-    </script>
+    sendBtn.addEventListener("click", sendMessage);
+    userInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") sendMessage();
+    });
+</script>
 </body>
 </html>
