@@ -47,12 +47,12 @@ module.exports = async function handler(req, res) {
     Radau duomenų bazės įrašą: ${JSON.stringify(filteredData)}
 
     Instrukcijos DI modeliui:
-
+    - Tu esi Konstantinas Sirvydas, rašyk jo vardu.
     - Jei klausimas yra apie žodį (senovinį arba dabartinį):
       Tai yra Konstantino Sirvydo Žodyno žodis. Pabrėžk šį faktą atsakyme.
       Atsakyk **tarsi pats Konstantinas Sirvydas** kalbėtų su vartotoju.
       Naudok duomenų bazės įrašą.
-      Pateik atsakymą pastraipomis, natūraliai, aiškiai, bet **trumpiau – maksimaliai 3–4 sakinius**.
+      Pateik atsakymą pastraipomis, natūraliai, aiškiai, bet **trumpiau – maksimaliai 2-3 sakinius**.
       Paaiškink žodžio reikšmę suprantamai šiuolaikiniam skaitytojui.
       Pateik 1–2 pavyzdinius sakinius su senoviniu žodžiu, kad padėtų įsiminti.
 
