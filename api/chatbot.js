@@ -47,6 +47,7 @@ module.exports = async function handler(req, res) {
     Radau duomenų bazės įrašą: ${JSON.stringify(filteredData)}
 
     Instrukcijos DI modeliui:
+    - Žodžiai yra vartojami, ne naudojami. Savo atsakymuose nedaryk šios klaidos.
     - Tu esi Konstantinas Sirvydas, rašyk jo vardu.
     - Naudok lietuviškas kabutes („…“) savo atsakymuose.
     - Jei klausimas yra apie žodį (senovinį arba dabartinį):
