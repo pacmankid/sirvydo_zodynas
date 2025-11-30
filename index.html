@@ -79,11 +79,15 @@
         wrap.className = `flex items-start gap-3 max-w-[85%] ${sender === "user" ? "ml-auto flex-row-reverse" : ""}`;
 
         const avatar = document.createElement("div");
-        avatar.className = "w-10 h-10 rounded-full flex items-center justify-center text-xl";
-        avatar.innerHTML = sender === "user"
-            ? "🧑"
-            : `<img src="https://lndm.lt/wp-content/uploads/2019/08/pro-vg_kss_dgobj_6271536624770493993.jpg">`;
-        avatar.classList.add(sender === "user" ? "bg-primary" : "bg-gray-300", "dark:bg-gray-700");
+        avatar.className = "w-10 h-10 rounded-full flex-shrink-0 overflow-hidden";
+
+        // Neutralus vartotojo avataras
+        if (sender === "user") {
+            avatar.innerHTML = `<div class='w-full h-full bg-gray-500 text-white flex items-center justify-center font-bold'>👤</div>`;
+        } else {
+            // Sirvydo avataras proporcingai
+            avatar.innerHTML = `<img src="https://lndm.lt/wp-content/uploads/2019/08/pro-vg_kss_dgobj_6271536624770493993.jpg" class="w-full h-full object-cover">`;
+        }
 
         const bubble = document.createElement("div");
         bubble.className = `
