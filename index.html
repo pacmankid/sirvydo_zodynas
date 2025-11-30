@@ -6,21 +6,33 @@
     <title>Sirvydo Žodynas – Chatbot</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 text-gray-200 min-h-screen flex flex-col relative">
+<body class="bg-gray-900 text-gray-200 min-h-screen flex flex-col">
 
-<div class="max-w-3xl mx-auto h-screen flex flex-col p-4">
+<div class="flex flex-1 h-screen max-w-5xl mx-auto w-full">
 
-    <!-- API INPUT -->
-    <label class="text-sm mb-1">Įveskite DI API raktą:</label>
-    <input type="text" id="apiKey" placeholder="API raktas" class="w-full p-3 rounded-lg bg-gray-700 text-gray-100 mb-3 focus:outline-none">
+    <!-- CHAT + INPUT AREA -->
+    <div class="flex-1 flex flex-col">
 
-    <!-- CHAT WINDOW -->
-    <div id="chatbox" class="flex-1 overflow-y-auto p-4 space-y-4 mb-28 sm:mb-28 bg-gray-800 rounded-xl shadow-inner"></div>
+        <!-- API INPUT -->
+        <div class="p-3">
+            <label class="text-sm mb-1 block">Įveskite DI API raktą:</label>
+            <input type="text" id="apiKey" placeholder="API raktas" class="w-full p-3 rounded-lg bg-gray-700 text-gray-100 focus:outline-none">
+        </div>
 
-    <!-- INPUT BAR FIXED BOTTOM -->
-    <div class="fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 p-3 flex items-center gap-2">
-        <input id="userQuestion" type="text" placeholder="Rašykite klausimą…" class="flex-1 p-3 rounded-lg bg-gray-700 text-gray-100 focus:outline-none">
-        <button id="sendBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">Siųsti</button>
+        <!-- CHAT WINDOW -->
+        <div id="chatbox" class="flex-1 overflow-y-auto p-4 space-y-4" style="height: calc(100vh - 130px);"></div>
+
+        <!-- INPUT BAR FIXED BOTTOM -->
+        <div class="p-3 bg-gray-800 border-t border-gray-700 flex items-center gap-2">
+            <input id="userQuestion" type="text" placeholder="Rašykite klausimą…" class="flex-1 p-3 rounded-lg bg-gray-700 text-gray-100 focus:outline-none">
+            <button id="sendBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">Siųsti</button>
+        </div>
+    </div>
+
+    <!-- SIDEBAR ISTORIJA -->
+    <div class="w-64 bg-gray-800 border-l border-gray-700 p-3 hidden lg:flex flex-col">
+        <h2 class="text-lg font-bold mb-3">Ieškotų žodžių istorija</h2>
+        <div id="historyList" class="flex-1 overflow-y-auto space-y-2"></div>
     </div>
 </div>
 
@@ -29,13 +41,26 @@
     const userInput = document.getElementById("userQuestion");
     const sendBtn = document.getElementById("sendBtn");
     const apiKeyInput = document.getElementById("apiKey");
+    const historyList = document.getElementById("historyList");
 
+    // ISTORIJOS IŠSAUGOJIMAS CHAT + WORDS
     function saveHistory() {
         localStorage.setItem("sirvydas_history", chatbox.innerHTML);
+        const words = Array.from(historyList.children).map(el => el.textContent);
+        localStorage.setItem("sirvydas_words", JSON.stringify(words));
     }
+
     function loadHistory() {
         const history = localStorage.getItem("sirvydas_history");
         if (history) chatbox.innerHTML = history;
+
+        const words = JSON.parse(localStorage.getItem("sirvydas_words") || '[]');
+        words.forEach(word => {
+            const el = document.createElement('div');
+            el.className = 'p-2 bg-gray-700 rounded text-sm cursor-pointer hover:bg-gray-600';
+            el.textContent = word;
+            historyList.appendChild(el);
+        });
     }
     loadHistory();
 
@@ -66,6 +91,13 @@
             wrapper.appendChild(avatar);
             bubble.textContent = text;
             chatbox.appendChild(wrapper);
+
+            // Įrašo į žodžių istoriją
+            const el = document.createElement('div');
+            el.className = 'p-2 bg-gray-700 rounded text-sm cursor-pointer hover:bg-gray-600';
+            el.textContent = text;
+            historyList.appendChild(el);
+
             chatbox.scrollTop = chatbox.scrollHeight;
             saveHistory();
             return;
