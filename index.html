@@ -80,7 +80,10 @@
 
         const avatar = document.createElement("div");
         avatar.className = "w-10 h-10 rounded-full flex items-center justify-center text-xl";
-        avatar.textContent = sender === "user" ? "🧑" : "👤";
+        avatar.innerHTML = sender === "user"
+            ? "🧑"
+            : `<img src="https://upload.wikimedia.org/wikipedia/commons/4/43/Konstanty_Szyrwid.PNG" 
+                 class="w-10 h-10 rounded-full object-cover">`;
         avatar.classList.add(sender === "user" ? "bg-primary" : "bg-gray-300", "dark:bg-gray-700");
 
         const bubble = document.createElement("div");
