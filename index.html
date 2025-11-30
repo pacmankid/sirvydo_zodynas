@@ -1,94 +1,192 @@
 <!DOCTYPE html>
-<html>
+<html lang="lt">
 <head>
     <meta charset="UTF-8">
-    <title>Sirvydo žodynas Chatbot</title>
+    <title>Sirvydo žodynas • Chatbot</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #f9f9f9;
+            font-family: 'Inter', Arial, sans-serif;
+            background: #eef1f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
         }
-        h1 { text-align: center; }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
         #chatbox {
-            border: 1px solid #ccc;
-            background-color: #fff;
-            padding: 10px;
-            height: 300px;
+            flex: 1;
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
             overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 12px 14px;
+            border-radius: 14px;
+            line-height: 1.45;
+            font-size: 15px;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user {
+            background: #0079ff;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .bot {
+            background: #f0f2f5;
+            color: #222;
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+        }
+
+        .input-area {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type=text], #apiKey {
+            flex: 1;
+            padding: 12px 14px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input[type=text]:focus,
+        #apiKey:focus {
+            border-color: #0079ff;
+            box-shadow: 0 0 0 3px rgba(0,121,255,0.15);
+        }
+
+        button {
+            padding: 12px 18px;
+            font-size: 15px;
+            background: #0079ff;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+
+        button:hover {
+            background: #0066d4;
+        }
+
+        .api-section {
             margin-bottom: 10px;
         }
-        .message {
-            margin: 5px 0;
-            padding: 8px;
-            border-radius: 5px;
+
+        label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+            display: block;
+            font-weight: 500;
         }
-        .user { background-color: #d0f0ff; text-align: right; }
-        .bot { background-color: #f0f0f0; text-align: left; }
-        input[type=text] { width: 100%; padding: 8px; margin: 5px 0; box-sizing: border-box; }
-        button { padding: 10px 20px; margin-top: 5px; width: 100%; }
     </style>
 </head>
 <body>
-    <h1>Sirvydo žodynas Chatbot</h1>
 
-    <label>Įveskite savo DI API raktą:</label>
-    <input type="text" id="apiKey" placeholder="API raktas">
+<div class="container">
+    <h1>Sirvydo žodynas • Chatbot</h1>
+
+    <div class="api-section">
+        <label>Įveskite savo DI API raktą:</label>
+        <input type="text" id="apiKey" placeholder="API raktas">
+    </div>
 
     <div id="chatbox"></div>
 
-    <input type="text" id="userQuestion" placeholder="Įveskite klausimą">
-    <button id="sendBtn">Siųsti</button>
+    <div class="input-area">
+        <input type="text" id="userQuestion" placeholder="Įveskite klausimą...">
+        <button id="sendBtn">Siųsti</button>
+    </div>
+</div>
 
-    <script>
-        const chatbox = document.getElementById('chatbox');
-        const userInput = document.getElementById('userQuestion');
-        const sendBtn = document.getElementById('sendBtn');
+<script>
+    const chatbox = document.getElementById('chatbox');
+    const userInput = document.getElementById('userQuestion');
+    const sendBtn = document.getElementById('sendBtn');
 
-        function addMessage(text, sender) {
-            const msgDiv = document.createElement('div');
-            msgDiv.classList.add('message', sender);
-            msgDiv.innerText = text;
-            chatbox.appendChild(msgDiv);
-            chatbox.scrollTop = chatbox.scrollHeight;
+    function addMessage(text, sender) {
+        const msgDiv = document.createElement('div');
+        msgDiv.classList.add('message', sender);
+        msgDiv.innerText = text;
+        chatbox.appendChild(msgDiv);
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const apiKey = document.getElementById('apiKey').value;
+        const question = userInput.value.trim();
+
+        if (!apiKey || !question) {
+            alert('Įveskite API raktą ir klausimą');
+            return;
         }
 
-        async function sendMessage() {
-            const apiKey = document.getElementById('apiKey').value;
-            const question = userInput.value;
+        addMessage(question, 'user');
+        userInput.value = '';
 
-            if (!apiKey || !question) {
-                alert('Įveskite API raktą ir klausimą');
-                return;
-            }
+        try {
+            const response = await fetch('/api/chatbot', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ apiKey, prompt: question })
+            });
 
-            addMessage(question, 'user');
-            userInput.value = '';
-
-            try {
-                const response = await fetch('/api/chatbot', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ apiKey, prompt: question })
-                });
-
-                const data = await response.json();
-                const answer = data.answer || "Įvyko klaida gaunant atsakymą";
-                addMessage(answer, 'bot');
-            } catch (err) {
-                console.error(err);
-                addMessage('Įvyko klaida', 'bot');
-            }
+            const data = await response.json();
+            const answer = data.answer || "Įvyko klaida gaunant atsakymą.";
+            addMessage(answer, 'bot');
+        } catch (err) {
+            console.error(err);
+            addMessage('Įvyko klaida.', 'bot');
         }
+    }
 
-        sendBtn.addEventListener('click', sendMessage);
+    sendBtn.addEventListener('click', sendMessage);
 
-        // Siuntimas paspaudus Enter
-        userInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
-    </script>
+    userInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+</script>
+
 </body>
 </html>
