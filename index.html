@@ -73,11 +73,18 @@
     const sendBtn = document.getElementById('sendBtn');
     const toggleTheme = document.getElementById('toggleTheme');
     const apiForm = document.getElementById("apiForm");
+    const apiInput = document.getElementById("apiKey");
 
     /* DARK MODE */
     toggleTheme.addEventListener('click', () =>
         document.documentElement.classList.toggle('dark')
     );
+
+    /* ===== 1. UŽKRAUNAME API RAKTĄ IŠ LOCALSTORAGE ===== */
+    const savedKey = localStorage.getItem("sirvydasApiKey");
+    if (savedKey) {
+        apiInput.value = savedKey;
+    }
 
     /* Chrome slaptažodžių sistema — užblokuojame tikrą submit */
     apiForm.addEventListener("submit", (e) => {
@@ -116,13 +123,16 @@
 
     /* SEND MESSAGE */
     async function sendMessage() {
-        const apiKey = document.getElementById('apiKey').value.trim();
+        const apiKey = apiInput.value.trim();
         const question = userInput.value.trim();
 
         if (!apiKey || !question) {
             alert("Įveskite API raktą ir klausimą");
             return;
         }
+
+        /* ===== 2. IŠSAUGOME API RAKTĄ Į LOCALSTORAGE ===== */
+        localStorage.setItem("sirvydasApiKey", apiKey);
 
         /* Chrome password save request trigger */
         apiForm.submit();
