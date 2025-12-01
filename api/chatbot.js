@@ -80,10 +80,10 @@ module.exports = async function handler(req, res) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": Bearer ${apiKey}
+                "Authorization": `Bearer ${apiKey}`
             },
             body: JSON.stringify({
-                model: "gpt-5.1",   // ← ČIA PAKEISTA
+                model: "gpt-5.1",
                 messages: [{ role: "user", content: promptToDI }],
                 max_completion_tokens: 300
             })
