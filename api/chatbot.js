@@ -41,7 +41,7 @@ module.exports = async function handler(req, res) {
     const promptToDI = `
     Vartotojas klausia: „${question || ""}“
 
-    ${filteredData.length > 0 ? `Radau duomenų bazės įrašą: ${JSON.stringify(filteredData)}` : ""}
+    ${filteredData.length > 0 ? Radau duomenų bazės įrašą: ${JSON.stringify(filteredData)} : ""}
 
     Instrukcijos:
     1. Bendras stilius:
@@ -80,7 +80,7 @@ module.exports = async function handler(req, res) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${apiKey}`
+                "Authorization": Bearer ${apiKey}
             },
             body: JSON.stringify({
                 model: "gpt-5.1",   // ← ČIA PAKEISTA
@@ -92,11 +92,7 @@ module.exports = async function handler(req, res) {
         const data = await response.json();
         console.log("OpenAI atsakymas:", data);
 
-        // PADALYTI Į PASTRAIPAS
-        let answer = data.choices?.[0]?.message?.content || "Įvyko klaida gaunant atsakymą";
-        const paragraphs = answer.split(/\n+/).filter(p => p.trim() !== "");
-        answer = paragraphs.map(p => `<p>${p}</p>`).join("");
-
+        const answer = data.choices?.[0]?.message?.content || "Įvyko klaida gaunant atsakymą";
         return res.status(200).json({ answer });
 
     } catch (err) {
