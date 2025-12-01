@@ -37,11 +37,14 @@
         </button>
     </div>
 
-    <!-- API INPUT -->
-    <label class="text-sm">Įveskite savo DI API raktą:</label>
-    <input type="text" id="apiKey"
-        class="w-full p-2 rounded-lg border dark:border-gray-700 bg-white dark:bg-gray-800 mb-2"
-        placeholder="API raktas">
+    <!-- API INPUT (forma dėl Chrome autofill) -->
+    <form id="apiForm" class="mb-2">
+        <label class="text-sm">Įveskite savo DI API raktą:</label>
+        <input type="password" id="apiKey" name="apikey" autocomplete="current-password"
+            class="w-full p-2 rounded-lg border dark:border-gray-700 bg-white dark:bg-gray-800"
+            placeholder="API raktas">
+        <button type="submit" class="hidden"></button>
+    </form>
 
     <!-- CHATBOX -->
     <div id="chatbox"
@@ -53,7 +56,6 @@
         <input type="text" id="userQuestion"
             class="flex-1 p-3 rounded-xl border dark:border-gray-700 bg-white dark:bg-gray-900"
             placeholder="Įveskite klausimą...">
-
         <button id="sendBtn"
             class="px-5 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition">
             Siųsti
@@ -67,11 +69,24 @@
     const userInput = document.getElementById('userQuestion');
     const sendBtn = document.getElementById('sendBtn');
     const toggleTheme = document.getElementById('toggleTheme');
+    const apiForm = document.getElementById("apiForm");
+    const apiInput = document.getElementById("apiKey");
 
     /* DARK MODE */
     toggleTheme.addEventListener('click', () =>
         document.documentElement.classList.toggle('dark')
     );
+
+    /* ===== 1. Užkrauname API raktą iš localStorage ===== */
+    const savedKey = localStorage.getItem("sirvydasApiKey");
+    if (savedKey) {
+        apiInput.value = savedKey;
+    }
+
+    /* Užblokuojame tikrą formos submit, Chrome vis tiek pasiūlys išsaugoti */
+    apiForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+    });
 
     /* ADD MESSAGE */
     function addMessage(text, sender = "bot") {
@@ -81,12 +96,10 @@
         const avatar = document.createElement("div");
         avatar.className = "w-10 h-10 rounded-full flex-shrink-0 overflow-hidden";
 
-        // Neutralus vartotojo avataras
         if (sender === "user") {
             avatar.innerHTML = `<div class='w-full h-full bg-gray-500 text-white flex items-center justify-center font-bold'>👤</div>`;
         } else {
-            // Sirvydo avataras proporcingai
-            avatar.innerHTML = `<img src="https://lndm.lt/wp-content/uploads/2019/08/pro-vg_kss_dgobj_6271536624770493993.jpg" class="w-full h-full object-cover">`;
+            avatar.innerHTML = `<img src="data/ks.png" class="w-full h-full object-cover">`;
         }
 
         const bubble = document.createElement("div");
@@ -94,18 +107,19 @@
             p-3 rounded-xl text-sm leading-relaxed shadow
             ${sender === "user" ? "bg-primary text-white" : "bg-gray-200 dark:bg-msgBot"}
         `;
-        bubble.textContent = text;
+
+        const paragraphs = text.split(/\n+/).filter(line => line.trim() !== "");
+        bubble.innerHTML = paragraphs.map(p => `<p class="mb-2">${p}</p>`).join("");
 
         wrap.appendChild(avatar);
         wrap.appendChild(bubble);
         chatbox.appendChild(wrap);
-
         chatbox.scrollTop = chatbox.scrollHeight;
     }
 
     /* SEND MESSAGE */
     async function sendMessage() {
-        const apiKey = document.getElementById('apiKey').value.trim();
+        const apiKey = apiInput.value.trim();
         const question = userInput.value.trim();
 
         if (!apiKey || !question) {
@@ -113,10 +127,12 @@
             return;
         }
 
+        /* ===== 2. Išsaugome API raktą į localStorage ===== */
+        localStorage.setItem("sirvydasApiKey", apiKey);
+
         addMessage(question, "user");
         userInput.value = "";
 
-        // Typing indicator
         const typing = document.createElement("div");
         typing.id = "typing";
         typing.className = "text-gray-500 dark:text-gray-400 text-sm italic";
@@ -125,10 +141,12 @@
         chatbox.scrollTop = chatbox.scrollHeight;
 
         try {
+            const firstMessage = !sessionStorage.getItem("sirvydasGreeted");
+
             const response = await fetch("/api/chatbot", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ apiKey, prompt: question })
+                body: JSON.stringify({ apiKey, prompt: question, firstMessage })
             });
 
             const data = await response.json();
@@ -136,6 +154,9 @@
 
             typing.remove();
             addMessage(answer, "bot");
+
+            if (firstMessage) sessionStorage.setItem("sirvydasGreeted", "true");
+
         } catch {
             typing.remove();
             addMessage("Įvyko klaida.", "bot");
