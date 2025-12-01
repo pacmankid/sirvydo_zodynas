@@ -92,7 +92,11 @@ module.exports = async function handler(req, res) {
         const data = await response.json();
         console.log("OpenAI atsakymas:", data);
 
-        const answer = data.choices?.[0]?.message?.content || "Įvyko klaida gaunant atsakymą";
+        // PADALYTI Į PASTRAIPAS
+        let answer = data.choices?.[0]?.message?.content || "Įvyko klaida gaunant atsakymą";
+        const paragraphs = answer.split(/\n+/).filter(p => p.trim() !== "");
+        answer = paragraphs.map(p => `<p>${p}</p>`).join("");
+
         return res.status(200).json({ answer });
 
     } catch (err) {
