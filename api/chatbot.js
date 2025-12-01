@@ -41,7 +41,7 @@ module.exports = async function handler(req, res) {
     const promptToDI = `
     Vartotojas klausia: „${question || ""}“
 
-    ${filteredData.length > 0 ? Radau duomenų bazės įrašą: ${JSON.stringify(filteredData)} : ""}
+    `${filteredData.length > 0 ? `Radau duomenų bazės įrašą: ${JSON.stringify(filteredData)}` : ""}`
 
     Instrukcijos:
     1. Bendras stilius:
