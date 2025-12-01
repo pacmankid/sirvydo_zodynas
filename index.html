@@ -2,7 +2,7 @@
 <html lang="lt" class="dark">
 <head>
     <meta charset="UTF-8" />
-    <title>Sirvydo žodynas • ChatGPT pokalbių robotas</title>
+    <title>Sirvydo žodynas • Chatbot</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -30,7 +30,7 @@
 
     <!-- HEADER -->
     <div class="flex items-center justify-between mb-4">
-        <h1 class="text-2xl font-bold">Sirvydo žodynas • ChatGPT pokalbių robotas</h1>
+        <h1 class="text-2xl font-bold">Sirvydo žodynas • Chatbot</h1>
         <button id="toggleTheme"
             class="px-3 py-1 rounded-lg bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
             🌙 / ☀️
@@ -38,13 +38,10 @@
     </div>
 
     <!-- API INPUT -->
-    <form id="apiForm" class="mb-2">
-        <label class="text-sm">Įveskite savo DI API raktą:</label>
-        <input type="password" id="apiKey" name="apikey" autocomplete="current-password"
-            class="w-full p-2 rounded-lg border dark:border-gray-700 bg-white dark:bg-gray-800"
-            placeholder="API raktas">
-        <button type="submit" class="hidden"></button>
-    </form>
+    <label class="text-sm">Įveskite savo DI API raktą:</label>
+    <input type="text" id="apiKey"
+        class="w-full p-2 rounded-lg border dark:border-gray-700 bg-white dark:bg-gray-800 mb-2"
+        placeholder="API raktas">
 
     <!-- CHATBOX -->
     <div id="chatbox"
@@ -56,6 +53,7 @@
         <input type="text" id="userQuestion"
             class="flex-1 p-3 rounded-xl border dark:border-gray-700 bg-white dark:bg-gray-900"
             placeholder="Įveskite klausimą...">
+
         <button id="sendBtn"
             class="px-5 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition">
             Siųsti
@@ -65,104 +63,89 @@
 </div>
 
 <script>
-const chatbox = document.getElementById('chatbox');
-const userInput = document.getElementById('userQuestion');
-const sendBtn = document.getElementById('sendBtn');
-const toggleTheme = document.getElementById('toggleTheme');
-const apiForm = document.getElementById("apiForm");
-const apiInput = document.getElementById("apiKey");
+    const chatbox = document.getElementById('chatbox');
+    const userInput = document.getElementById('userQuestion');
+    const sendBtn = document.getElementById('sendBtn');
+    const toggleTheme = document.getElementById('toggleTheme');
 
-/* DARK MODE */
-toggleTheme.addEventListener('click', () =>
-    document.documentElement.classList.toggle('dark')
-);
+    /* DARK MODE */
+    toggleTheme.addEventListener('click', () =>
+        document.documentElement.classList.toggle('dark')
+    );
 
-/* API raktas iš localStorage */
-const savedKey = localStorage.getItem("sirvydasApiKey");
-if (savedKey) apiInput.value = savedKey;
+    /* ADD MESSAGE */
+    function addMessage(text, sender = "bot") {
+        const wrap = document.createElement("div");
+        wrap.className = `flex items-start gap-3 max-w-[85%] ${sender === "user" ? "ml-auto flex-row-reverse" : ""}`;
 
-apiForm.addEventListener("submit", (e) => e.preventDefault());
+        const avatar = document.createElement("div");
+        avatar.className = "w-10 h-10 rounded-full flex-shrink-0 overflow-hidden";
 
-/* ADD MESSAGE */
-function addMessage(text, sender = "bot") {
-    const wrap = document.createElement("div");
-    wrap.className = `flex items-start gap-3 max-w-[85%] ${sender === "user" ? "ml-auto flex-row-reverse" : ""}`;
+        // Neutralus vartotojo avataras
+        if (sender === "user") {
+            avatar.innerHTML = `<div class='w-full h-full bg-gray-500 text-white flex items-center justify-center font-bold'>👤</div>`;
+        } else {
+            // Sirvydo avataras proporcingai
+            avatar.innerHTML = `<img src="https://lndm.lt/wp-content/uploads/2019/08/pro-vg_kss_dgobj_6271536624770493993.jpg" class="w-full h-full object-cover">`;
+        }
 
-    const avatar = document.createElement("div");
-    avatar.className = "w-10 h-10 rounded-full flex-shrink-0 overflow-hidden";
-    if (sender === "user") {
-        avatar.innerHTML = `<div class='w-full h-full bg-gray-500 text-white flex items-center justify-center font-bold'>👤</div>`;
-    } else {
-        avatar.innerHTML = `<img src="data/ks.png" class="w-full h-full object-cover">`;
+        const bubble = document.createElement("div");
+        bubble.className = `
+            p-3 rounded-xl text-sm leading-relaxed shadow
+            ${sender === "user" ? "bg-primary text-white" : "bg-gray-200 dark:bg-msgBot"}
+        `;
+        bubble.textContent = text;
+
+        wrap.appendChild(avatar);
+        wrap.appendChild(bubble);
+        chatbox.appendChild(wrap);
+
+        chatbox.scrollTop = chatbox.scrollHeight;
     }
 
-    const bubble = document.createElement("div");
-    bubble.className = `
-        p-3 rounded-xl text-sm leading-relaxed shadow
-        ${sender === "user" ? "bg-primary text-white" : "bg-gray-200 dark:bg-msgBot"}
-    `;
+    /* SEND MESSAGE */
+    async function sendMessage() {
+        const apiKey = document.getElementById('apiKey').value.trim();
+        const question = userInput.value.trim();
 
-    const paragraphs = text.split(/\n+/).filter(line => line.trim() !== "");
-    bubble.innerHTML = paragraphs.map(p => `<p class="mb-2">${p}</p>`).join("");
+        if (!apiKey || !question) {
+            alert("Įveskite API raktą ir klausimą");
+            return;
+        }
 
-    wrap.appendChild(avatar);
-    wrap.appendChild(bubble);
-    chatbox.appendChild(wrap);
-    chatbox.scrollTop = chatbox.scrollHeight;
-}
+        addMessage(question, "user");
+        userInput.value = "";
 
-/* SEND MESSAGE */
-async function sendMessage(first = false) {
-    const apiKey = apiInput.value.trim();
-    const question = userInput.value.trim();
+        // Typing indicator
+        const typing = document.createElement("div");
+        typing.id = "typing";
+        typing.className = "text-gray-500 dark:text-gray-400 text-sm italic";
+        typing.textContent = "Sirvydas mąsto...";
+        chatbox.appendChild(typing);
+        chatbox.scrollTop = chatbox.scrollHeight;
 
-    if (!apiKey || (!question && !first)) {
-        alert("Įveskite API raktą ir klausimą");
-        return;
+        try {
+            const response = await fetch("/api/chatbot", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ apiKey, prompt: question })
+            });
+
+            const data = await response.json();
+            const answer = data.answer || "Įvyko klaida.";
+
+            typing.remove();
+            addMessage(answer, "bot");
+        } catch {
+            typing.remove();
+            addMessage("Įvyko klaida.", "bot");
+        }
     }
 
-    localStorage.setItem("sirvydasApiKey", apiKey);
-    if (question) addMessage(question, "user");
-    userInput.value = "";
-
-    const typing = document.createElement("div");
-    typing.id = "typing";
-    typing.className = "text-gray-500 dark:text-gray-400 text-sm italic";
-    typing.textContent = "Sirvydas mąsto...";
-    chatbox.appendChild(typing);
-    chatbox.scrollTop = chatbox.scrollHeight;
-
-    try {
-        const response = await fetch("/api/chatbot", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                apiKey,
-                prompt: question,
-                firstMessage: first
-            })
-        });
-
-        const data = await response.json();
-        const answer = data.answer || "Įvyko klaida.";
-        typing.remove();
-        addMessage(answer, "bot");
-
-        if (first) sessionStorage.setItem("sirvydasGreeted", "true");
-    } catch {
-        typing.remove();
-        addMessage("Įvyko klaida.", "bot");
-    }
-}
-
-sendBtn.addEventListener("click", () => sendMessage());
-userInput.addEventListener("keydown", (e) => { if (e.key === "Enter") sendMessage(); });
-
-/* Pirmas pasisveikinimas */
-window.addEventListener("load", () => {
-    const first = !sessionStorage.getItem("sirvydasGreeted");
-    if (first) sendMessage(true);
-});
+    sendBtn.addEventListener("click", sendMessage);
+    userInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") sendMessage();
+    });
 </script>
 
 </body>
