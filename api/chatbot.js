@@ -56,7 +56,7 @@ module.exports = async function handler(req, res) {
         Iš „paaiškinimas“ lauko išversk tekstą į aiškią lietuvių kalbą. Taip pat nurodyk jo lenkišką ir lotynišką versija jei ji yra.
           Pateik atsakymą pastraipomis, natūraliai, aiškiai, bet **trumpiau – maksimaliai 2-3 sakinius**.
           Paaiškink žodžio reikšmę suprantamai šiuolaikiniam skaitytojui.
-          Pateik 1–2 pavyzdinius sakinius su senoviniu žodžiu, kad padėtų įsiminti.
+          Pateik 1–2 pavyzdinius sakinius su dabartiniu žodžiu, kad padėtų įsiminti.
 
         - Jei klausimas nėra apie žodį, bet susijęs su Konstantinu Sirvydu ar jo gyvenimu:
           Atsakyk draugiškai ir moksliniu tonu, pateik įdomių faktų ar kontekstą, tarsi **Konstantinas Sirvydas pats pasakotų istoriją**, bet **trumpiau, 2–3 sakinius**.
