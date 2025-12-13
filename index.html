@@ -12,10 +12,10 @@
 
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
 
-<div class="max-w-7xl mx-auto p-4">
+<div class="max-w-7xl mx-auto p-4 h-screen flex flex-col">
 
     <!-- HEADER -->
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex justify-between items-center mb-4 flex-shrink-0">
         <h1 class="text-2xl font-bold">Sirvydo žodynas</h1>
         <button id="toggleTheme"
             class="px-3 py-1 bg-gray-300 dark:bg-gray-700 rounded">
@@ -26,22 +26,25 @@
     <!-- API KEY -->
     <input id="apiKey"
         placeholder="Įveskite DI API raktą (tik paaiškinimams)"
-        class="w-full mb-4 p-2 rounded bg-white dark:bg-gray-800 border dark:border-gray-700"/>
+        class="w-full mb-4 p-2 rounded bg-white dark:bg-gray-800 border dark:border-gray-700 flex-shrink-0"/>
 
-    <!-- TURINYS -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- MAIN CONTENT -->
+    <div class="flex flex-1 gap-6 overflow-hidden">
 
         <!-- KAIRĖ: ABĖCĖLĖ + ŽODŽIAI -->
-        <div>
-            <div id="alphabet" class="flex flex-wrap gap-2 mb-4"></div>
-            <div id="words"
-                class="grid grid-cols-2 lg:grid-cols-3 gap-2">
+        <div class="flex flex-col w-1/2">
+            <!-- ABĖCĖLĖ -->
+            <div id="alphabet" class="flex flex-wrap gap-2 mb-4 flex-shrink-0"></div>
+
+            <!-- ŽODŽIAI (scroll) -->
+            <div id="words" class="flex-1 overflow-y-auto bg-white dark:bg-gray-800 p-2 rounded shadow">
+                <!-- Žodžių mygtukai bus čia -->
             </div>
         </div>
 
         <!-- DEŠINĖ: DI PAAIŠKINIMAS -->
         <div id="explanation"
-            class="hidden bg-white dark:bg-gray-800 p-5 rounded shadow text-sm leading-relaxed">
+            class="w-1/2 hidden bg-white dark:bg-gray-800 p-5 rounded shadow text-sm leading-relaxed overflow-y-auto">
             <div class="italic opacity-70">
                 Pasirinkite žodį, kad matytumėte paaiškinimą.
             </div>
@@ -95,7 +98,7 @@ async function loadWords(letter) {
     words.forEach(word => {
         const btn = document.createElement("button");
         btn.textContent = word;
-        btn.className = "p-2 text-left rounded bg-white dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-gray-700";
+        btn.className = "p-2 text-left rounded bg-white dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-gray-700 w-full";
         btn.onclick = () => explainWord(word);
         wordsDiv.appendChild(btn);
     });
@@ -112,14 +115,19 @@ async function explainWord(word) {
     explanationDiv.classList.remove("hidden");
     explanationDiv.innerHTML = `<div class="italic">Sirvydas mąsto apie „${word}“…</div>`;
 
-    const res = await fetch("/api/explain", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ apiKey, word })
-    });
+    try {
+        const res = await fetch("/api/explain", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ apiKey, word })
+        });
 
-    const data = await res.json();
-    explanationDiv.innerHTML = data.answer.replace(/\n/g, "<br>");
+        const data = await res.json();
+        explanationDiv.innerHTML = data.answer.replace(/\n/g, "<br>");
+    } catch (err) {
+        explanationDiv.innerHTML = `<div class="text-red-500">Nepavyko gauti paaiškinimo</div>`;
+        console.error(err);
+    }
 }
 </script>
 
