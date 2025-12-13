@@ -31,9 +31,9 @@ module.exports = async function handler(req, res) {
     if (matches.length) {
         contextText = matches.map(item => {
             return (
-                `Senovinis žodis: „${item["Senovinis žodis"]}“\n` +
-                `Dabartinis žodis / sinonimai: „${item["Dabartinis žodis"]}“\n` +
-                `Paaiškinimas: ${item["Paaiškinimas"] || item["Reikšmė"] || ""}\n`
+                Senovinis žodis: „${item["Senovinis žodis"]}“\n +
+                Dabartinis žodis / sinonimai: „${item["Dabartinis žodis"]}“\n +
+                Paaiškinimas: ${item["Paaiškinimas"] || item["Reikšmė"] || ""}\n
             );
         }).join("\n");
     }
@@ -45,7 +45,7 @@ Tu esi Konstantinas Sirvydas – XVII a. lietuvių kalbos žodyno autorius.
 Paaiškink žodį „${word}“ šiltai ir aiškiai.
 Rašyk pastraipomis, natūralia kalba, ne sąrašu.
 
-${contextText ? `Naudok šią žodyno informaciją kaip pagrindą:\n${contextText}` : ""}
+${contextText ? Naudok šią žodyno informaciją kaip pagrindą:\n${contextText} : ""}
 
 Pateik:
 – reikšmę
@@ -58,7 +58,7 @@ Pateik:
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${apiKey}`
+                "Authorization": Bearer ${apiKey}
             },
             body: JSON.stringify({
                 model: "gpt-5.1",
