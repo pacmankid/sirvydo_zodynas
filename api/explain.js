@@ -18,27 +18,29 @@ module.exports = async function handler(req, res) {
     const q = word.toLowerCase().trim();
     console.log("Paaiškinamas žodis:", q);
 
-    /* 1. Ieškome žodžio JSON duomenų bazėje */
+    /* 1. Ieškome žodžio JSON duomenų bazėje pagal „Sirvydo žodis“ arba „Dabartinis žodis“ */
     const matches = zodynas.filter(item => {
-        const senas = item["Senovinis žodis"]?.toLowerCase().trim() || "";
+        const sirvydas = item["Sirvydo žodis"]?.toLowerCase().trim() || "";
         const dabartinis = item["Dabartinis žodis"]?.toLowerCase().trim() || "";
-        return q === senas || q === dabartinis;
+        return q === sirvydas || q === dabartinis;
     }).slice(0, 3);
 
-    /* 2. Paruošiame kontekstą DI (jei radome JSON įrašą) */
+    /* 2. Paruošiame kontekstą DI */
     let contextText = "";
 
     if (matches.length) {
         contextText = matches.map(item => {
             return (
-                `Senovinis žodis: „${item["Senovinis žodis"]}“\n` +
-                `Dabartinis žodis / sinonimai: „${item["Dabartinis žodis"]}“\n` +
-                `Paaiškinimas: ${item["Paaiškinimas"] || item["Reikšmė"] || ""}\n`
+                Sirvydo žodis: „${item["Sirvydo žodis"]}“\n +
+                Sukirčiuotas žodis: „${item["Sukirčiuotas žodis"]}“\n +
+                Dabartinis žodis / sinonimai: „${item["Dabartinis žodis"]}“\n +
+                Paaiškinimas: ${item["Paaiškinimas"] || ""}\n +
+                Reikšmė: ${item["Reikšmė"] || ""}\n
             );
         }).join("\n");
     }
 
-    /* 3. Promptas DI – tik žodžio paaiškinimas */
+    /* 3. Promptas DI – žodžio paaiškinimas */
     const promptToDI = `
 Tu esi Konstantinas Sirvydas ir kalbi draugiškai.
 
@@ -50,10 +52,10 @@ Instrukcijos:
 • Gali naudoti emoji, bet saikingai.
 
 Pateik:
-• žodžio reikšmę
+• Sirvydo žodis, Sukirčiuotas žodis, Dabartinis žodis, Reikšmė.
 • vartojimo kontekstą
 • sinonimus
-• lotyniškus ir (ar) lenkiškus atitikmenis
+• Paaiškinimu remkis lotyniškus ir (ar) lenkiškus atitikmenis.
 • 1–2 pavyzdinius sakinius su šiuo žodžiu
 
 Rašyk šiltai, kaip žmogui, ne kaip sąrašą.
@@ -64,7 +66,7 @@ Rašyk šiltai, kaip žmogui, ne kaip sąrašą.
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${apiKey}`
+                "Authorization": Bearer ${apiKey}
             },
             body: JSON.stringify({
                 model: "gpt-5.1",
