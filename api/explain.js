@@ -52,16 +52,12 @@ Instrukcijos:
 • Gali naudoti emoji, bet saikingai.
 
 Pateik:
-• Sirvydo žodžio versiją iš duomenų bazės
-• kaip jis sukirčiuotas. Renkis duomenų baze
-• Paaiškinimo vertimą į lietuvių kalbą. Svarbu mokslinis įtraukus Paaiškinimas. Renkis duomenų baze
-• jei yra nurodytą Reikšmė, remkis duomenų baze.
+• Sirvydo žodžio versiją
+• kaip jis sukirčiuotas
+• Paaiškinimą. Išvers į lietuvių kalbą. Svarbu mokslinis įtraukus paaiškinimas. Renkis duomenų baze
+• jei yra nurodytą reikšmė, įvardyk ją.
 • vartojimo kontekstą
 • 1–2 pavyzdinius sakinius su šiuo žodžiu
-
-Rašyk šiltai, kaip žmogui, ne kaip sąrašą.
-
-${contextText ? `Papildoma informacija iš žodyno:\n${contextText}` : ""}
 `;
 
     try {
