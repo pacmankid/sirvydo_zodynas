@@ -20,7 +20,7 @@ module.exports = async function handler(req, res) {
 
     /* 1. Ieškome žodžio JSON duomenų bazėje */
     const matches = zodynas.filter(item => {
-        const senas = item["Senovinis žodis"]?.toLowerCase().trim() || "";
+        const senas = item["Sirvydo žodis"]?.toLowerCase().trim() || "";
         const dabartinis = item["Dabartinis žodis"]?.toLowerCase().trim() || "";
         return q === senas || q === dabartinis;
     }).slice(0, 3);
@@ -31,9 +31,11 @@ module.exports = async function handler(req, res) {
     if (matches.length) {
         contextText = matches.map(item => {
             return (
-                `Senovinis žodis: „${item["Senovinis žodis"]}“\n` +
-                `Dabartinis žodis / sinonimai: „${item["Dabartinis žodis"]}“\n` +
-                `Paaiškinimas: ${item["Paaiškinimas"] || item["Reikšmė"] || ""}\n`
+                    Sirvydo žodis: „${item["Sirvydo žodis"]}“\n +
+                    Sukirčiuotas žodis: „${item["Sukirčiuotas žodis"]}“\n +
+                    Dabartinis žodis / sinonimai: „${item["Dabartinis žodis"]}“\n +
+                    Paaiškinimas: ${item["Paaiškinimas"] || ""}\n +
+                    Reikšmė: ${item["Reikšmė"] || ""}\n
             );
         }).join("\n");
     }

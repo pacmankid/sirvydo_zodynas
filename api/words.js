@@ -15,7 +15,7 @@ module.exports = function handler(req, res) {
         return res.json([]);
     }
 
-    // Filtruojame tik pagal Senovinį žodį
+    // Filtruojame tik pagal Dabartinį žodį
     const words = zodynas
         .map(row => row["Dabartinis žodis"])
         .filter(word => typeof word === "string" && word.trim().toUpperCase().startsWith(letter))
