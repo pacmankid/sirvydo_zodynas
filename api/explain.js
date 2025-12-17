@@ -42,6 +42,8 @@ module.exports = async function handler(req, res) {
     const promptToDI = `
 Paaiškink žodį „${word}“.
 
+${contextText ? `Papildoma informacija iš žodyno:\n${contextText}` : ""}
+
 Instrukcijos:
 • Rašyk aiškiai, natūraliai, pastraipomis.
 • 1–2 sakiniai pastraipoje, 2–3 pastraipos.
@@ -52,10 +54,6 @@ Pateik:
 • vartojimo kontekstą
 • lotyniškus ir (ar) lenkiškus atitikmenis pagal paaiškinimą.
 • 1–2 pavyzdinius sakinius su šiuo žodžiu
-
-Rašyk šiltai, kaip žmogui, ne kaip sąrašą.
-
-${contextText ? `Papildoma informacija iš žodyno:\n${contextText}` : ""}
 `;
 
     try {
