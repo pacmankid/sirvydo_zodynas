@@ -31,11 +31,11 @@ module.exports = async function handler(req, res) {
     if (matches.length) {
         contextText = matches.map(item => {
             return (
-                    Sirvydo žodis: „${item["Sirvydo žodis"]}“\n +
-                    Sukirčiuotas žodis: „${item["Sukirčiuotas žodis"]}“\n +
-                    Dabartinis žodis / sinonimai: „${item["Dabartinis žodis"]}“\n +
-                    Paaiškinimas: ${item["Paaiškinimas"] || ""}\n +
-                    Reikšmė: ${item["Reikšmė"] || ""}\n
+                    'Sirvydo žodis: „${item["Sirvydo žodis"]}'\n +
+                    'Sukirčiuotas žodis: „${item["Sukirčiuotas žodis"]}'\n +
+                    'Dabartinis žodis / sinonimai: „${item["Dabartinis žodis"]}'\n +
+                    'Paaiškinimas: ${item["Paaiškinimas"] || ""}'\n +
+                    'Reikšmė: ${item["Reikšmė"] || ""}'\n
             );
         }).join("\n");
     }
