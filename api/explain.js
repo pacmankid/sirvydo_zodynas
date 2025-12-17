@@ -1,6 +1,5 @@
 const path = require("path");
 const fs = require("fs");
-const { fetch } = require("undici");
 
 const filePath = path.join(process.cwd(), "data", "csvjson.json");
 const zodynas = JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -30,33 +29,36 @@ module.exports = async function handler(req, res) {
     let contextText = "";
 
     if (matches.length) {
-        contextText = matches.map(item => {
+        const contextText = matches.map(item => {
             return `Sirvydo žodis: "${item["Sirvydo žodis"]}"
-    Sukirčiuotas žodis: "${item["Sukirčiuotas žodis"]}"
-    Dabartinis žodis / sinonimai: "${item["Dabartinis žodis"]}"
-    Paaiškinimas: ${item["Paaiškinimas"] || ""}
-    Reikšmė: ${item["Reikšmė"] || ""}`;
+        Sukirčiuotas žodis: "${item["Sukirčiuotas žodis"]}"
+        Dabartinis žodis / sinonimai: "${item["Dabartinis žodis"]}"
+        Paaiškinimas: ${item["Paaiškinimas"] || ""}
+        Reikšmė: ${item["Reikšmė"] || ""}`;
         }).join("\n\n");
     }
 
+    /* 3. Promptas DI – tik žodžio paaiškinimas */
     const promptToDI = `
-    Paaiškink žodį „${word}“.
+Tu esi Konstantinas Sirvydas ir kalbi draugiškai.
 
-    Instrukcijos:
-    • Rašyk aiškiai, natūraliai, pastraipomis.
-    • 1–2 sakiniai pastraipoje, 2–3 pastraipos.
-    • Gali naudoti emoji, bet saikingai.
+Paaiškink žodį „${word}“.
 
-    ${contextText ? `Papildoma informacija iš žodyno:\n${contextText}` : ""}
+Instrukcijos:
+• Rašyk aiškiai, natūraliai, pastraipomis.
+• 1–2 sakiniai pastraipoje, 2–3 pastraipos.
+• Gali naudoti emoji, bet saikingai.
 
-    Pateik:
-    • Sirvydo žodį, kaip jis kirčiuojamas, dabartinį žodį ir jo reikšmę, jei ji yra.
-    • vartojimo kontekstą
-    • lotyniškus ir (ar) lenkiškus atitikmenis remiantis paaiškinimu.
-    • 1–2 pavyzdinius sakinius su šiuo žodžiu
+${contextText ? `Papildoma informacija iš žodyno:\n${contextText}` : ""}
 
-    Rašyk moksline kalba.
-    `;
+Pateik:
+• Sirvydo žodį, kaip jis kirčiuojamas, dabartinį žodį ir jo reikšmę, jei ji yra.
+• vartojimo kontekstą
+• lotyniškus ir (ar) lenkiškus atitikmenis rementis paaiškinimu.
+• 1–2 pavyzdinius sakinius su šiuo žodžiu
+
+Rašyk moksline kalba.
+`;
 
     try {
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -68,7 +70,7 @@ module.exports = async function handler(req, res) {
             body: JSON.stringify({
                 model: "gpt-5.1",
                 messages: [{ role: "user", content: promptToDI }],
-                max_tokens: 1000 // didesnis limitas
+                max_completion_tokens: 400
             })
         });
 
