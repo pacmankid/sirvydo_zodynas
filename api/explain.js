@@ -18,54 +18,52 @@ module.exports = async function handler(req, res) {
     const q = word.toLowerCase().trim();
     console.log("Paaiškinamas žodis:", q);
 
-    // 1. Ieškome žodžio JSON duomenų bazėje pagal „Sirvydo žodis“ arba „Dabartinis žodis“
+    /* 1. Ieškome žodžio JSON duomenų bazėje pagal „Sirvydo žodis“ arba „Dabartinis žodis“ */
     const matches = zodynas.filter(item => {
         const sirvydas = item["Sirvydo žodis"]?.toLowerCase().trim() || "";
         const dabartinis = item["Dabartinis žodis"]?.toLowerCase().trim() || "";
         return q === sirvydas || q === dabartinis;
     }).slice(0, 3);
 
-    if (!matches.length) {
-        return res.status(404).json({ error: "Žodis nerastas duomenų bazėje" });
+    /* 2. Paruošiame kontekstą DI */
+    let contextText = "";
+
+    if (matches.length) {
+        contextText = matches.map(item => {
+            return (
+                `Sirvydo žodis: „${item["Sirvydo žodis"]}“\n` +
+                `Sukirčiuotas žodis: „${item["Sukirčiuotas žodis"]}“\n` +
+                `Dabartinis žodis / sinonimai: „${item["Dabartinis žodis"]}“\n` +
+                `Paaiškinimas: ${item["Paaiškinimas"] || ""}\n` +
+                `Reikšmė: ${item["Reikšmė"] || ""}\n`
+            );
+        }).join("\n");
     }
 
-    // 2. Paimame pirmą atitikmenį ir paruošiame kintamuosius
-    const item = matches[0];
-    const sirvydoZodis = item["Sirvydo žodis"] || "";
-    const sukircZodis = item["Sukirčiuotas žodis"] || "";
-    const dabartinisZodis = item["Dabartinis žodis"] || "";
-    const paaiskinimas = item["Paaiškinimas"] || "";
-    const reiksme = item["Reikšmė"] || "";
-
-    // 3. Sukuriame saugų promptą DI
-    const prompt = `
+    /* 3. Promptas DI – žodžio paaiškinimas */
+    const promptToDI = `
 Tu esi Konstantinas Sirvydas ir kalbi draugiškai.
 
-Paaiškink žodį "${word}".
+Paaiškink žodį „${word}“.
 
 Instrukcijos:
-• Rašyk aiškiai ir natūraliai, pastraipomis.
-• 1–2 sakiniai pastraipoje, iš viso 2–3 pastraipos.
+• Rašyk aiškiai, natūraliai, pastraipomis.
+• 1–2 sakiniai pastraipoje, 2–3 pastraipos.
 • Gali naudoti emoji, bet saikingai.
 
 Pateik:
-• Sirvydo žodžio formą: "${sirvydoZodis}"
-• Kaip šis žodis sukirčiuotas: "${sukircZodis}"
-• Paaiškinimo vertimą ir interpretaciją lietuvių kalba: "${paaiskinimas}"
-• Jei pateikta reikšmė, remkis ja ir ją apibendrink: "${reiksme}"
+• žodžio reikšmę
+• vartojimo kontekstą
+• sinonimus
+• lotyniškus ir (ar) lenkiškus atitikmenis
 • 1–2 pavyzdinius sakinius su šiuo žodžiu
 
-Atsakymą parenk remdamasis tik šiais duomenimis:
+Rašyk šiltai, kaip žmogui, ne kaip sąrašą.
 
-Sirvydo žodis: "${sirvydoZodis}"
-Sukirčiuotas žodis: "${sukircZodis}"
-Dabartinis žodis / sinonimai: "${dabartinisZodis}"
-Paaiškinimas: "${paaiskinimas}"
-Reikšmė: "${reiksme}"
+${contextText ? `Papildoma informacija iš žodyno:\n${contextText}` : ""}
 `;
 
     try {
-        // 4. Naudojame globalų fetch (Node.js ≥18 serverless)
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -74,8 +72,8 @@ Reikšmė: "${reiksme}"
             },
             body: JSON.stringify({
                 model: "gpt-5.1",
-                messages: [{ role: "user", content: prompt }],
-                max_tokens: 400
+                messages: [{ role: "user", content: promptToDI }],
+                max_completion_tokens: 400
             })
         });
 
