@@ -18,29 +18,27 @@ module.exports = async function handler(req, res) {
     const q = word.toLowerCase().trim();
     console.log("Paaiškinamas žodis:", q);
 
-    /* 1. Ieškome žodžio JSON duomenų bazėje pagal „Sirvydo žodis“ arba „Dabartinis žodis“ */
+    /* 1. Ieškome žodžio JSON duomenų bazėje */
     const matches = zodynas.filter(item => {
-        const sirvydas = item["Sirvydo žodis"]?.toLowerCase().trim() || "";
+        const senas = item["Senovinis žodis"]?.toLowerCase().trim() || "";
         const dabartinis = item["Dabartinis žodis"]?.toLowerCase().trim() || "";
-        return q === sirvydas || q === dabartinis;
+        return q === senas || q === dabartinis;
     }).slice(0, 3);
 
-    /* 2. Paruošiame kontekstą DI */
+    /* 2. Paruošiame kontekstą DI (jei radome JSON įrašą) */
     let contextText = "";
 
     if (matches.length) {
         contextText = matches.map(item => {
             return (
-                `Sirvydo žodis: „${item["Sirvydo žodis"]}“\n` +
-                `Sukirčiuotas žodis: „${item["Sukirčiuotas žodis"]}“\n` +
+                `Senovinis žodis: „${item["Senovinis žodis"]}“\n` +
                 `Dabartinis žodis / sinonimai: „${item["Dabartinis žodis"]}“\n` +
-                `Paaiškinimas: ${item["Paaiškinimas"] || ""}\n` +
-                `Reikšmė: ${item["Reikšmė"] || ""}\n`
+                `Paaiškinimas: ${item["Paaiškinimas"] || item["Reikšmė"] || ""}\n`
             );
         }).join("\n");
     }
 
-    /* 3. Promptas DI – žodžio paaiškinimas */
+    /* 3. Promptas DI – tik žodžio paaiškinimas */
     const promptToDI = `
 Tu esi Konstantinas Sirvydas ir kalbi draugiškai.
 
@@ -52,12 +50,13 @@ Instrukcijos:
 • Gali naudoti emoji, bet saikingai.
 
 Pateik:
-• Sirvydo žodžio versiją
-• kaip jis sukirčiuotas
-• Paaiškinimą. Išvers į lietuvių kalbą. Svarbu mokslinis įtraukus paaiškinimas. Renkis duomenų baze
-• jei yra nurodytą reikšmė, įvardyk ją.
+• žodžio reikšmę
 • vartojimo kontekstą
+• sinonimus
+• lotyniškus ir (ar) lenkiškus atitikmenis
 • 1–2 pavyzdinius sakinius su šiuo žodžiu
+
+Rašyk šiltai, kaip žmogui, ne kaip sąrašą.
 `;
 
     try {
