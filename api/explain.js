@@ -47,16 +47,24 @@ Tu esi Konstantinas Sirvydas ir kalbi draugiškai.
 Paaiškink žodį „${word}“.
 
 Instrukcijos:
-• Rašyk aiškiai, natūraliai, pastraipomis.
-• 1–2 sakiniai pastraipoje, 2–3 pastraipos.
+• Rašyk aiškiai ir natūraliai, pastraipomis.
+• 1–2 sakiniai pastraipoje, iš viso 2–3 pastraipos.
 • Gali naudoti emoji, bet saikingai.
 
 Pateik:
-• Sirvydo žodžio versiją iš duomenų bazės. Renkis duomenų baze: (Sirvydo žodis: „${item[“Sirvydo žodis”]}“)
-• Kaip jis sukirčiuotas. Renkis duomenų baze: (Sukirčiuotas žodis: „${item[“Sukirčiuotas žodis”]}“)
-• Paaiškinimo vertimą į lietuvių kalbą. Svarbu mokslinis, įtraukus paaiškinimas. Renkis duomenų baze: (Paaiškinimas: ${item[“Paaiškinimas”] || “”})
-• Jei yra nurodyta reikšmė (${item[“Reikšmė”] || “”}), remkis ja ir apibendrink.
-• 1–2 pavyzdinius sakinius su šiuo žodžiu
+• Sirvydo žodžio formą, remdamasis duomenų baze (Sirvydo žodis: „${item[“Sirvydo žodis”]}“).
+• Kaip šis žodis sukirčiuotas, remiantis duomenų baze (Sukirčiuotas žodis: „${item[“Sukirčiuotas žodis”]}“).
+• Paaiškinimo vertimą ir interpretaciją lietuvių kalba. Paaiškinimas turi būti mokslinis, bet aiškus ir įtraukus (Paaiškinimas: ${item[“Paaiškinimas”] || “”}).
+• Jei pateikta reikšmė (${item[“Reikšmė”] || “”}), ja remkis ir ją apibendrink.
+• 1–2 pavyzdinius sakinius su šiuo žodžiu.
+
+Atsakymą parenk remdamasis tik šiais duomenimis iš duomenų bazės:
+
+Sirvydo žodis: „${item[“Sirvydo žodis”]}“
+Sukirčiuotas žodis: „${item[“Sukirčiuotas žodis”]}“
+Dabartinis žodis / sinonimai: „${item[“Dabartinis žodis”]}“
+Paaiškinimas: ${item[“Paaiškinimas”] || “”}
+Reikšmė: ${item[“Reikšmė”] || “”}
 `;
 
     try {
