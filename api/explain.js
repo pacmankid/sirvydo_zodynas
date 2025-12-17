@@ -55,9 +55,7 @@ Pateik:
 • lotyniškus ir (ar) lenkiškus atitikmenis rementis paaiškinimu.
 • 1–2 pavyzdinius sakinius su šiuo žodžiu
 
-Rašyk šiltai, kaip žmogui, ne kaip sąrašą.
-
-${contextText ? `Papildoma informacija iš žodyno:\n${contextText}` : ""}
+Rašyk moksline kalba.
 `;
 
     try {
