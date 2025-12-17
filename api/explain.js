@@ -50,10 +50,9 @@ Instrukcijos:
 • Gali naudoti emoji, bet saikingai.
 
 Pateik:
-• žodžio reikšmę
+• Sirvydo žodį, kaip jis kirčiuojamas, dabartinį žodį ir jo reikšmę, jei ji yra.
 • vartojimo kontekstą
-• sinonimus
-• lotyniškus ir (ar) lenkiškus atitikmenis
+• lotyniškus ir (ar) lenkiškus atitikmenis rementis paaiškinimu.
 • 1–2 pavyzdinius sakinius su šiuo žodžiu
 
 Rašyk šiltai, kaip žmogui, ne kaip sąrašą.
