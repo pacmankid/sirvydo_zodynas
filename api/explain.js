@@ -44,27 +44,23 @@ module.exports = async function handler(req, res) {
     const prompt = `
     Tu esi Konstantinas Sirvydas ir kalbi draugiškai.
 
-    Paaiškink žodį "${word}".
+    Paaiškink žodį „${word}“.
 
     Instrukcijos:
-    • Rašyk aiškiai ir natūraliai, pastraipomis.
-    • 1–2 sakiniai pastraipoje, iš viso 2–3 pastraipos.
+    • Rašyk aiškiai, natūraliai, pastraipomis.
+    • 1–2 sakiniai pastraipoje, 2–3 pastraipos.
     • Gali naudoti emoji, bet saikingai.
 
     Pateik:
-    • Sirvydo žodžio formą, remdamasis duomenų baze (Sirvydo žodis: "${item["Sirvydo žodis"]}").
-    • Kaip šis žodis sukirčiuotas, remiantis duomenų baze (Sukirčiuotas žodis: "${item["Sukirčiuotas žodis"]}").
-    • Paaiškinimo vertimą ir interpretaciją lietuvių kalba. Paaiškinimas turi būti mokslinis, bet aiškus ir įtraukus (Paaiškinimas: ${item["Paaiškinimas"] || ""}).
-    • Jei pateikta reikšmė (${item["Reikšmė"] || ""}), ja remkis ir ją apibendrink.
-    • 1–2 pavyzdinius sakinius su šiuo žodžiu.
+    • žodžio reikšmę
+    • vartojimo kontekstą
+    • sinonimus
+    • lotyniškus ir (ar) lenkiškus atitikmenis
+    • 1–2 pavyzdinius sakinius su šiuo žodžiu
 
-    Atsakymą parenk remdamasis tik šiais duomenimis:
+    Rašyk šiltai, kaip žmogui, ne kaip sąrašą.
 
-    Sirvydo žodis: "${item["Sirvydo žodis"]}"
-    Sukirčiuotas žodis: "${item["Sukirčiuotas žodis"]}"
-    Dabartinis žodis / sinonimai: "${item["Dabartinis žodis"]}"
-    Paaiškinimas: ${item["Paaiškinimas"] || ""}
-    Reikšmė: ${item["Reikšmė"] || ""}
+    ${contextText ? `Papildoma informacija iš žodyno:\n${contextText}` : ""}
     `;
 
     try {
