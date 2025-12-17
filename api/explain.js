@@ -49,15 +49,15 @@ Instrukcijos:
 • 1–2 sakiniai pastraipoje, 2–3 pastraipos.
 • Gali naudoti emoji, bet saikingai.
 
-${contextText ? `Papildoma informacija iš žodyno:\n${contextText}` : ""}
-
 Pateik:
 • Sirvydo žodį, kaip jis kirčiuojamas, dabartinį žodį ir jo reikšmę, jei ji yra.
 • vartojimo kontekstą
-• lotyniškus ir (ar) lenkiškus atitikmenis rementis paaiškinimu.
+• lotyniškus ir (ar) lenkiškus atitikmenis pagal paaiškinimą.
 • 1–2 pavyzdinius sakinius su šiuo žodžiu
 
-Rašyk moksline kalba.
+Rašyk šiltai, kaip žmogui, ne kaip sąrašą.
+
+${contextText ? `Papildoma informacija iš žodyno:\n${contextText}` : ""}
 `;
 
     try {
