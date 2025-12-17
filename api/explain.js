@@ -1,6 +1,6 @@
 const path = require("path");
 const fs = require("fs");
-const fetch = require("node-fetch");
+const { fetch } = require("undici");
 
 const filePath = path.join(process.cwd(), "data", "csvjson.json");
 const zodynas = JSON.parse(fs.readFileSync(filePath, "utf8"));
