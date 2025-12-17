@@ -142,13 +142,13 @@ async function explainWord(word) {
     }
 }
 
-/* DARK MODE – keičiame foną / tekstą ir title spalvą */
+/* DARK MODE – fonas #2f4f3e, tekstas ir title #f4efe6 */
 document.getElementById("toggleTheme").onclick = () => {
     const body = document.body;
     const title = document.querySelector("h1");
 
     if (body.style.backgroundColor === 'rgb(244, 239, 230)') { // šviesus režimas
-        body.style.backgroundColor = '#3b2f2f'; // tamsus fonas
+        body.style.backgroundColor = '#2f4f3e'; // tamsus fonas
         body.style.color = '#f4efe6';           // bendras tekstas
         title.style.color = '#f4efe6';          // title šviesiai tamsiame režime
     } else {
