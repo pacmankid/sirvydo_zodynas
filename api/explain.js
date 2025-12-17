@@ -1,6 +1,5 @@
 const path = require("path");
 const fs = require("fs");
-const fetch = require("node-fetch"); // jei Node.js <18, kitaip fetch yra global
 
 const filePath = path.join(process.cwd(), "data", "csvjson.json");
 const zodynas = JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -66,6 +65,7 @@ Reikšmė: "${reiksme}"
 `;
 
     try {
+        // 4. Naudojame globalų fetch (Node.js ≥18 serverless)
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
             headers: {
