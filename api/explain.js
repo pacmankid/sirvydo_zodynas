@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs");
+const fetch = require("node-fetch");
 
 const filePath = path.join(process.cwd(), "data", "csvjson.json");
 const zodynas = JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -67,7 +68,7 @@ module.exports = async function handler(req, res) {
             body: JSON.stringify({
                 model: "gpt-5.1",
                 messages: [{ role: "user", content: promptToDI }],
-                max_completion_tokens: 400
+                max_tokens: 1000 // didesnis limitas
             })
         });
 
