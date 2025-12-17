@@ -142,15 +142,19 @@ async function explainWord(word) {
     }
 }
 
-/* DARK MODE – keičiame tik foną / tekstą */
+/* DARK MODE – keičiame foną / tekstą ir title spalvą */
 document.getElementById("toggleTheme").onclick = () => {
     const body = document.body;
-    if (body.style.backgroundColor === 'rgb(244, 239, 230)') {
-        body.style.backgroundColor = '#3b2f2f';
-        body.style.color = '#f4efe6';
+    const title = document.querySelector("h1");
+
+    if (body.style.backgroundColor === 'rgb(244, 239, 230)') { // šviesus režimas
+        body.style.backgroundColor = '#3b2f2f'; // tamsus fonas
+        body.style.color = '#f4efe6';           // bendras tekstas
+        title.style.color = '#f4efe6';          // title šviesiai tamsiame režime
     } else {
-        body.style.backgroundColor = '#f4efe6';
-        body.style.color = '#3b2f2f';
+        body.style.backgroundColor = '#f4efe6'; // šviesus fonas
+        body.style.color = '#3b2f2f';           // bendras tekstas
+        title.style.color = '#2f4f3e';          // title spalva šviesiame režime
     }
 };
 </script>
