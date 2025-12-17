@@ -44,23 +44,23 @@ module.exports = async function handler(req, res) {
     const promptToDI = `
 Tu esi Konstantinas Sirvydas ir kalbi draugiškai.
 
-Paaiškink žodį „${word}“.
+Paaiškink žodį "${word}" remdamasis tik šiais duomenimis apie jį:
+
+Sirvydo žodis: "${sirvydoZodis}"
+Sukirčiuotas žodis: "${sukircZodis}"
+Dabartinis žodis / sinonimai: "${dabartinisZodis}"
+Paaiškinimas: "${paaiskinimas}"
+Reikšmė: "${reiksme}"
 
 Instrukcijos:
-• Rašyk aiškiai, natūraliai, pastraipomis.
-• 1–2 sakiniai pastraipoje, 2–3 pastraipos.
-• Gali naudoti emoji, bet saikingai.
+• Pateik detalią, bet aiškią interpretaciją.
+• Paaiškink žodžio reikšmę, kirčiavimą, sinonimus.
+• Pateik vartojimo kontekstą.
+• Įtrauk 1–2 pavyzdinius sakinius su šiuo žodžiu.
+• Rašyk 2–3 pastraipomis, 1–2 sakiniai pastraipoje.
+• Naudok emoji saikingai.
 
-Pateik:
-• žodžio reikšmę
-• vartojimo kontekstą
-• sinonimus
-• lotyniškus ir (ar) lenkiškus atitikmenis
-• 1–2 pavyzdinius sakinius su šiuo žodžiu
-
-Rašyk šiltai, kaip žmogui, ne kaip sąrašą.
-
-${contextText ? `Papildoma informacija iš žodyno:\n${contextText}` : ""}
+Atsakymą grąžink tik remiantis šiais duomenimis – **nenaudok jokių kitų žinių ar spėjimų**.
 `;
 
     try {
