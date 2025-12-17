@@ -63,7 +63,10 @@ Instrukcijos:
 `;
 
     try {
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        // Naudojame WHATWG URL API
+        const apiUrl = new URL("https://api.openai.com/v1/chat/completions");
+
+        const response = await fetch(apiUrl.toString(), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
