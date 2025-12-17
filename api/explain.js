@@ -31,11 +31,11 @@ module.exports = async function handler(req, res) {
     if (matches.length) {
         contextText = matches.map(item => {
             return (
-                Sirvydo žodis: „${item["Sirvydo žodis"]}“\n +
-                Sukirčiuotas žodis: „${item["Sukirčiuotas žodis"]}“\n +
-                Dabartinis žodis / sinonimai: „${item["Dabartinis žodis"]}“\n +
-                Paaiškinimas: ${item["Paaiškinimas"] || ""}\n +
-                Reikšmė: ${item["Reikšmė"] || ""}\n
+                `Sirvydo žodis: „${item["Sirvydo žodis"]}“\n` +
+                `Sukirčiuotas žodis: „${item["Sukirčiuotas žodis"]}“\n` +
+                `Dabartinis žodis / sinonimai: „${item["Dabartinis žodis"]}“\n` +
+                `Paaiškinimas: ${item["Paaiškinimas"] || ""}\n` +
+                `Reikšmė: ${item["Reikšmė"] || ""}\n`
             );
         }).join("\n");
     }
@@ -60,7 +60,7 @@ Pateik:
 
 Rašyk šiltai, kaip žmogui, ne kaip sąrašą.
 
-${contextText ? Papildoma informacija iš žodyno:\n${contextText} : ""}
+${contextText ? `Papildoma informacija iš žodyno:\n${contextText}` : ""}
 `;
 
     try {
@@ -68,7 +68,7 @@ ${contextText ? Papildoma informacija iš žodyno:\n${contextText} : ""}
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": Bearer ${apiKey}
+                "Authorization": `Bearer ${apiKey}`
             },
             body: JSON.stringify({
                 model: "gpt-5.1",
