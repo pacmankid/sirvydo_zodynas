@@ -31,11 +31,11 @@ module.exports = async function handler(req, res) {
     if (matches.length) {
         contextText = matches.map(item => {
             return (
-                `Sirvydo žodis: „${item["Sirvydo žodis"]}“\n` +
-                `Sukirčiuotas žodis: „${item["Sukirčiuotas žodis"]}“\n` +
-                `Dabartinis žodis / sinonimai: „${item["Dabartinis žodis"]}“\n` +
-                `Paaiškinimas: ${item["Paaiškinimas"] || ""}\n` +
-                `Reikšmė: ${item["Reikšmė"] || ""}\n`
+                Sirvydo žodis: „${item["Sirvydo žodis"]}“\n +
+                Sukirčiuotas žodis: „${item["Sukirčiuotas žodis"]}“\n +
+                Dabartinis žodis / sinonimai: „${item["Dabartinis žodis"]}“\n +
+                Paaiškinimas: ${item["Paaiškinimas"] || ""}\n +
+                Reikšmė: ${item["Reikšmė"] || ""}\n
             );
         }).join("\n");
     }
@@ -44,23 +44,23 @@ module.exports = async function handler(req, res) {
     const promptToDI = `
 Tu esi Konstantinas Sirvydas ir kalbi draugiškai.
 
-Paaiškink žodį "${word}" remdamasis tik šiais duomenimis apie jį:
-
-Sirvydo žodis: "${sirvydoZodis}"
-Sukirčiuotas žodis: "${sukircZodis}"
-Dabartinis žodis / sinonimai: "${dabartinisZodis}"
-Paaiškinimas: "${paaiskinimas}"
-Reikšmė: "${reiksme}"
+Paaiškink žodį „${word}“.
 
 Instrukcijos:
-• Pateik detalią, bet aiškią interpretaciją.
-• Paaiškink žodžio reikšmę, kirčiavimą, sinonimus.
-• Pateik vartojimo kontekstą.
-• Įtrauk 1–2 pavyzdinius sakinius su šiuo žodžiu.
-• Rašyk 2–3 pastraipomis, 1–2 sakiniai pastraipoje.
-• Naudok emoji saikingai.
+• Rašyk aiškiai, natūraliai, pastraipomis.
+• 1–2 sakiniai pastraipoje, 2–3 pastraipos.
+• Gali naudoti emoji, bet saikingai.
 
-Atsakymą grąžink tik remiantis šiais duomenimis – **nenaudok jokių kitų žinių ar spėjimų**.
+Pateik:
+• žodžio reikšmę
+• vartojimo kontekstą
+• sinonimus
+• lotyniškus ir (ar) lenkiškus atitikmenis
+• 1–2 pavyzdinius sakinius su šiuo žodžiu
+
+Rašyk šiltai, kaip žmogui, ne kaip sąrašą.
+
+${contextText ? Papildoma informacija iš žodyno:\n${contextText} : ""}
 `;
 
     try {
@@ -68,7 +68,7 @@ Atsakymą grąžink tik remiantis šiais duomenimis – **nenaudok jokių kitų 
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${apiKey}`
+                "Authorization": Bearer ${apiKey}
             },
             body: JSON.stringify({
                 model: "gpt-5.1",
