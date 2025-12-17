@@ -29,15 +29,13 @@ module.exports = async function handler(req, res) {
     let contextText = "";
 
     if (matches.length) {
-        contextText = matches.map(item => {
-            return (
-                    'Sirvydo žodis: „${item["Sirvydo žodis"]}'\n +
-                    'Sukirčiuotas žodis: „${item["Sukirčiuotas žodis"]}'\n +
-                    'Dabartinis žodis / sinonimai: „${item["Dabartinis žodis"]}'\n +
-                    'Paaiškinimas: ${item["Paaiškinimas"] || ""}'\n +
-                    'Reikšmė: ${item["Reikšmė"] || ""}'\n
-            );
-        }).join("\n");
+        const contextText = matches.map(item => {
+            return `Sirvydo žodis: "${item["Sirvydo žodis"]}"
+        Sukirčiuotas žodis: "${item["Sukirčiuotas žodis"]}"
+        Dabartinis žodis / sinonimai: "${item["Dabartinis žodis"]}"
+        Paaiškinimas: ${item["Paaiškinimas"] || ""}
+        Reikšmė: ${item["Reikšmė"] || ""}`;
+        }).join("\n\n");
     }
 
     /* 3. Promptas DI – tik žodžio paaiškinimas */
