@@ -53,7 +53,7 @@ Instrukcijos:
 
 Pateik:
 • Sirvydo žodžio versiją iš duomenų bazės. Renkis duomenų baze: (Sirvydo žodis: „${item["Sirvydo žodis"]})
-* kaip jis sukirčiuotas. Renkis duomenų baze: (Sukirčiuotas žodis: „${item["Sukirčiuotas žodis”]})
+* kaip jis sukirčiuotas. Renkis duomenų baze: (Sukirčiuotas žodis: „${item["Sukirčiuotas žodis"]})
 * Paaiškinimo vertimą į lietuvių kalbą. Svarbu mokslinis įtraukus Paaiškinimas. Renkis duomenų baze: Paaiškinimas: ${item["Paaiškinimas"] || ""}
 * Jei yra nurodytą Reikšmė: ${item["Reikšmė"] || ""} , remkis ir apibendrink.
 • 1–2 pavyzdinius sakinius su šiuo žodžiu
