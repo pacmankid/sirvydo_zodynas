@@ -1,24 +1,34 @@
 <!DOCTYPE html>
-<html lang="lt" class="dark">
+<html lang="lt">
 <head>
     <meta charset="UTF-8" />
-    <title>SSirvydo žodžių lentyna</title>
+    <title>Sirvydo žodžių lentyna</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { darkMode: 'class' }
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        fonas: '#f4efe6',
+                        antrastes: '#2f4f3e',
+                        tekstas: '#3b2f2f'
+                    }
+                }
+            }
+        }
     </script>
 </head>
 
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+<body class="bg-fonas text-tekstas">
 
 <div class="max-w-7xl mx-auto p-4 h-screen flex flex-col">
 
     <!-- HEADER -->
     <div class="flex justify-between items-center mb-4 flex-shrink-0">
-        <h1 class="text-2xl font-bold">Sirvydo žodžių lentyna</h1>
+        <h1 class="text-2xl font-bold text-antrastes">Sirvydo žodžių lentyna</h1>
         <button id="toggleTheme"
-            class="px-3 py-1 bg-gray-300 dark:bg-gray-700 rounded">
+            class="px-3 py-1 rounded" style="background-color:#2f4f3e; color:#f4efe6;">
             🌙 / ☀️
         </button>
     </div>
@@ -26,7 +36,7 @@
     <!-- API KEY -->
     <input id="apiKey"
         placeholder="Įveskite DI API raktą (tik paaiškinimams)"
-        class="w-full mb-4 p-2 rounded bg-white dark:bg-gray-800 border dark:border-gray-700 flex-shrink-0"/>
+        class="w-full mb-4 p-2 rounded border" style="background-color:#f4efe6; color:#3b2f2f; border-color:#2f4f3e;"/>
 
     <!-- MAIN CONTENT -->
     <div class="flex flex-1 gap-6 overflow-hidden">
@@ -37,14 +47,16 @@
             <div id="alphabet" class="flex flex-wrap gap-2 mb-4 flex-shrink-0"></div>
 
             <!-- ŽODŽIAI (scroll) -->
-            <div id="words" class="flex-1 overflow-y-auto bg-white dark:bg-gray-800 p-2 rounded shadow">
+            <div id="words" class="flex-1 overflow-y-auto p-2 rounded shadow"
+                 style="background-color:#f4efe6; color:#3b2f2f;">
                 <!-- Žodžių mygtukai bus čia -->
             </div>
         </div>
 
         <!-- DEŠINĖ: DI PAAIŠKINIMAS -->
         <div id="explanation"
-            class="w-1/2 hidden bg-white dark:bg-gray-800 p-5 rounded shadow text-sm leading-relaxed overflow-y-auto">
+             class="w-1/2 hidden p-5 rounded shadow text-sm leading-relaxed overflow-y-auto"
+             style="background-color:#f4efe6; color:#3b2f2f;">
             <div class="italic opacity-70">
                 Pasirinkite žodį, kad matytumėte paaiškinimą.
             </div>
@@ -59,10 +71,6 @@ const wordsDiv = document.getElementById("words");
 const explanationDiv = document.getElementById("explanation");
 const apiKeyInput = document.getElementById("apiKey");
 
-/* DARK MODE */
-document.getElementById("toggleTheme").onclick = () =>
-    document.documentElement.classList.toggle("dark");
-
 /* ABĖCĖLĖ */
 const letters = "AĄBCČDEĘĖFGHIĮYJKLMNOPRSŠTUŲŪVZŽ".split("");
 let activeBtn = null;
@@ -70,11 +78,13 @@ let activeBtn = null;
 letters.forEach(letter => {
     const btn = document.createElement("button");
     btn.textContent = letter;
-    btn.className = "px-2 py-1 rounded bg-gray-200 dark:bg-gray-700 hover:bg-blue-500 hover:text-white";
+    btn.style.backgroundColor = '#f4efe6';
+    btn.style.color = '#3b2f2f';
+    btn.className = "px-2 py-1 rounded hover:bg-antrastes hover:text-fonas";
 
     btn.onclick = () => {
-        activeBtn?.classList.remove("bg-blue-500", "text-white");
-        btn.classList.add("bg-blue-500", "text-white");
+        activeBtn?.classList.remove("bg-antrastes", "text-fonas");
+        btn.classList.add("bg-antrastes", "text-fonas");
         activeBtn = btn;
         loadWords(letter);
     };
@@ -98,7 +108,9 @@ async function loadWords(letter) {
     words.forEach(word => {
         const btn = document.createElement("button");
         btn.textContent = word;
-        btn.className = "p-2 text-left rounded bg-white dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-gray-700 w-full";
+        btn.style.backgroundColor = '#f4efe6';
+        btn.style.color = '#3b2f2f';
+        btn.className = "p-2 text-left rounded hover:bg-antrastes hover:text-fonas w-full";
         btn.onclick = () => explainWord(word);
         wordsDiv.appendChild(btn);
     });
@@ -129,6 +141,18 @@ async function explainWord(word) {
         console.error(err);
     }
 }
+
+/* DARK MODE – keičiame tik foną / tekstą */
+document.getElementById("toggleTheme").onclick = () => {
+    const body = document.body;
+    if (body.style.backgroundColor === 'rgb(244, 239, 230)') {
+        body.style.backgroundColor = '#3b2f2f';
+        body.style.color = '#f4efe6';
+    } else {
+        body.style.backgroundColor = '#f4efe6';
+        body.style.color = '#3b2f2f';
+    }
+};
 </script>
 
 </body>
