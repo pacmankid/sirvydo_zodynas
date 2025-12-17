@@ -40,8 +40,6 @@ module.exports = async function handler(req, res) {
 
     /* 3. Promptas DI – tik žodžio paaiškinimas */
     const promptToDI = `
-Paaiškink žodį „${word}“.
-
 ${contextText ? `Papildoma informacija iš žodyno:\n${contextText}` : ""}
 
 Instrukcijos:
