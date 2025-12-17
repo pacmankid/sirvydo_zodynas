@@ -48,7 +48,8 @@ Instrukcijos:
 • Gali naudoti emoji, bet saikingai.
 
 Pateik:
-• Sirvydo žodį, kaip jis kirčiuojamas, dabartinį žodį ir jo reikšmę, jei ji yra.
+• Sirvydo žodį, kaip jis kirčiuojamas, dabartinį žodį.
+• Nurodyk žodžio reikšmę remiantis duomenimis "Reikšmė"
 • vartojimo kontekstą
 • lotyniškus ir (ar) lenkiškus atitikmenis pagal paaiškinimą.
 • 1–2 pavyzdinius sakinius su šiuo žodžiu
