@@ -1,6 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 
+// JSON duomenų bazė
 const filePath = path.join(process.cwd(), "data", "csvjson.json");
 const zodynas = JSON.parse(fs.readFileSync(filePath, "utf8"));
 
@@ -63,7 +64,7 @@ Instrukcijos:
 `;
 
     try {
-        // Naudojame WHATWG URL API
+        // 5. Naudojame WHATWG URL API
         const apiUrl = new URL("https://api.openai.com/v1/chat/completions");
 
         const response = await fetch(apiUrl.toString(), {
