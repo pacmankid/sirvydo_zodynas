@@ -30,16 +30,18 @@ module.exports = async function handler(req, res) {
 
     if (matches.length) {
         const contextText = matches.map(item => {
-            return `Sirvydo žodis: "${item["Sirvydo žodis"]}"
+            return Sirvydo žodis: "${item["Sirvydo žodis"]}"
         Sukirčiuotas žodis: "${item["Sukirčiuotas žodis"]}"
         Dabartinis žodis / sinonimai: "${item["Dabartinis žodis"]}"
         Paaiškinimas: ${item["Paaiškinimas"] || ""}
-        Reikšmė: ${item["Reikšmė"] || ""}`;
+        Reikšmė: ${item["Reikšmė"] || ""};
         }).join("\n\n");
     }
 
     /* 3. Promptas DI – tik žodžio paaiškinimas */
     const promptToDI = `
+Paaiškink žodį „${word}“.
+
 ${contextText ? `Papildoma informacija iš žodyno:\n${contextText}` : ""}
 
 Instrukcijos:
